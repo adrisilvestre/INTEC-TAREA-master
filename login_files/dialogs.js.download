@@ -1,0 +1,173 @@
+﻿var dialogs = {
+    terminos:
+        '<div class="modal-header">' +
+            '<a href="#" class="uk-close uk-float-right" onclick="ocultarModal()" ></a>' +
+            '<h1 class="uk-icon-tasks">TERMINOS & CONDICIONES</h1>' +
+        '</div>' +
+        '<div class="modal-content">' +
+        '<p class="font-bold-600">Cualquier Retiro esta sujeto a los nuevos reglamentos:</p>' +
+            '<ul>' +
+                '<li><span class="font-bold-600">Artículo 82: </span>' +
+                    'Todo estudiante podrá retirar una, varias o todas las ' +
+                    'asignaturas seleccionadas en un trimestre, desde la segunda ' +
+                    'hasta la novena semana del trimestre en curso.' +
+                '</li>' +
+                '<li><span class="font-bold-600">Artículo 83: </span>' +
+                    'Todo retiro de asignatura deberá ser realizado mediante el ' +
+                    'mecanismo establecido para tales fines.' +
+                '</li>' +
+                '<li><span class="font-bold-600">Artículo 84: </span>' +
+                    'Todo estudiante recibirá como calificación una “R” en todas ' +
+                    'las asignaturas que haya retirado.' +
+                    '<p><span class="font-bold-600">Parrafo: </span>' +
+                        'Las asignaturas retiradas serán tomadas, en ' +
+                        'consideración para el establecimiento del Progreso Académico ' +
+                        'del o la estudiante.' +
+                    '</p>' +
+                '</li>' +
+            '</ul>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+            '<div class="uk-grid">' +
+                '<div class="uk-width-6-10">'+
+                    '<div class="footer-form">' +
+                        '<input id="chkConfirmar" type="checkbox" name="chkConfirmar" />' +
+                        '<label for="chkConfirmar">He leido y acepto los terminos y condiciones expuestos en los articulos anteriores</label>' +
+                    '</div>' +
+                '</div>'+
+                '<div class="uk-width-2-10">'+
+                    '<button id="btnAceptarCondiciones" class=" uk-width-1-1 bg-black no-border button-square" onclick="ocultarCondiciones();">Aceptar</button>' +
+                 '</div>'+
+                '<div class="uk-width-2-10">'+
+                    '<button id="btnCancelarCondiciones" class=" uk-width-1-1 bg-black no-border button-square" onclick="window.location.href=\'/Main/Inicio\' ">Cancelar</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>',
+    causaRetiro :
+        '<div class="modal-header">' +
+            '<a href="#" class="uk-close uk-float-right" onclick="ocultarModal()" ></a>' +
+            '<h1 class="uk-icon-tasks">CAUSA DEL RETIRO</h1>'+
+        '</div>'+
+
+        '<div class="modal-content">'+
+            '<div class="uk-float-left uk-display-inline-block">'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkTrabajo" type="checkbox" name="chkTrabajo" />'+
+                    '<label for="chkTrabajo">Problemas de trabajo</label>'+
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkHorario" type="checkbox" name="chkTrabajo" />'+
+                    '<label for="chkHorario">Problemas de Horario</label>'+
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkSalud" type="checkbox" name="chkSalud" />'+
+                    '<label for="chkSalud">Problemas de Salud</label>'+
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkEconomico" type="checkbox" name="chkEconomico" />'+
+                    '<label for="chkEconomico">Problemas Economicos</label>'+
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkPersonal" type="checkbox" name="chkPersonal" />'+
+                    '<label for="chkPersonal">Problemas Personales</label>'+
+                '</div>'+
+            '</div>'+
+            '<div class="uk-float-right uk-display-inline-block">'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkDisgusto" type="checkbox" name="chkDisgusto" />'+
+                    '<label for="chkDisgusto">Disgusto con la institucion</label>'+
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkProfesor" type="checkbox" name="chkProfesor" />'+
+                    '<label for="chkProfesor">Problemas con el profesor</label>'+
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkAcademico" type="checkbox" name="chkAcademico" />'+
+                    '<label for="chkAcademico">Rendimiento Académico</label>' +
+                '</div>'+
+                '<div class="margin-bottom-5">'+
+                    '<input id="chkOtros" type="checkbox" name="chkOtros" />'+
+                    '<label for="chkotros">Otros</label>'+
+                '</div>'+
+            '</div>'+
+            '<div class="email-content">'+
+                '<div class="left"> Correo electronico donde desea recibir el reporte de retiros</div>'+
+                '<div class="right"> <input id="txtCorreo" type="text" ></div>' +
+            '</div>'+
+        '</div>'+
+
+        '<div class="modal-footer">'+
+            '<div class="uk-float-right">'+
+                '<button id="btnAceptarRazones" class="uk-margin-right bg-green no-border button-square"> Retirar</button>'+
+                '<button class="uk-margin-right bg-red no-border button-square" onclick="ocultarModal()"> Cancelar</button>'+
+            '</div>'+
+        '</div>',
+
+    confirmaCredenciales:
+            '<div class="modal-header">' +
+                '<a href="#" class="uk-close uk-float-right" onclick="ocultarModal()" ></a>' +
+                '<h1 class="uk-icon-tasks">CONFIRMA TUS CREDENCIALES</h1>' +
+            '</div>' +
+            '<div class="modal-content">' +
+                '<div class="text">' +
+                    '<label for="txtID">ID:</label>' +
+                    '<input id="txtID" type="text" disabled />' +
+                '</div>' +
+                '<div class="text">' +
+                    '<label for="txtPassword">Contraseña:</label>' +
+                    '<input id="txtPassword" type="password" />' +
+                '</div>' +
+                '<div id="msjError" class="color-red text-aligh-center"></div>' +
+            '</div>' +
+
+            '<div class="modal-footer">' +
+                '<div class="uk-float-right">' +
+                    '<button id="btnRetirar" class="uk-margin-right bg-green no-border large-button-square">Aceptar</button>' +
+                    '<button class="uk-margin-right bg-red no-border large-button-square" onclick="ocultarModal()">Cancelar</button>' +
+                '</div>' +
+            '</div>',
+
+    EspecificarCorreo:
+        '<div class="modal-header">' +
+            '<a href="#" class="uk-close uk-float-right" onclick="ocultarModal()" ></a>' +
+            '<h1 class="uk-icon-envelope">ESPECIFIQUE EL CORREO</h1>' +
+        '</div>' +
+        '<div class="modal-content">' +
+            '<label for="txtCorreo" class="uk-margin-right" >Correo Electronico</label>' +            
+            '<input id="txtCorreo" type="textbox" name="txtCorreo" />' +            
+        '</div>' +
+        '<div class="modal-footer">' +
+            '<div class="uk-float-right">' +
+                '<button id="btnGuardarCorreo" class="uk-margin-right bg-green no-border large-button-square">Aceptar</button>' +
+                '<button class="uk-margin-right bg-red no-border large-button-square" onclick="ocultarModal()">Cancelar</button>' +
+            '</div>' +            
+        '</div>',
+
+    Guia:
+        '<div class="modal-header">' +
+            '<a href="#" class="uk-close uk-float-right" onclick="ocultarModal()" ></a>' +
+            '<h1 class="uk-icon-question-circle">COMO USAR LA APLICACION</h1>' +            
+        '</div>' +
+        '<div class="modal-content">' + 
+            '<div style="width:600px; height:400px">' +
+                '<img id="imgWizard" src="/Content/themes/base/images/preseleccion.gif" />' +
+            '</div>' +
+            '<div id="labelWizard" style="padding: 10px;background-color: #FFE8DF;margin-top: 15px;height:60px;">' +
+                'Para seleccionar una materia debe expandir la asignatura presionando <span class="font-bold-600"> el botón + </span>. ' +
+                'Luego, marcar la sección deseada y presionar el botón de guardar. ' +
+                'Una materia esta seleccionada cuando aparece de color rosa. ' +
+            '</div>'+
+        '</div>' +
+        '<div class="modal-footer">' +
+            '<div id="image-button-group">' +
+                '<span class="selected">O</span>' +
+                '<span>O</span>' +
+                '<span>O</span>' +
+            '</div>' +
+            '<div class="uk-float-right">' +
+                '<button id="btnAnteriorWizard" class="uk-margin-right bg-black no-border large-button-square" style="background-color:gray" disabled>Anterior</button>' +
+                '<button id="btnSiguienteWizard" class="uk-margin-right bg-black no-border large-button-square">Siguiente</button>' +
+            '</div>' +
+        '</div>'
+}
+

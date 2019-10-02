@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://procesos.intec.edu.do/Usuario/Logout -->
+<html lang="es" class="uk-notouch">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!--[if IE 8]>
+        <link rel="stylesheet" href="/Content/ie8.css">
+    <![endif]-->
+
+    <!--[if lte IE 7]>
+        <link rel="stylesheet" href="/Content/ie7.css">
+    <![endif]-->
+
+    <title>Accesso Estudiantil a Procesos académicos</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./login_files/uikit.min.css">
+    <link rel="stylesheet" href="./login_files/style.css">
+    <link rel="stylesheet" href="./login_files/pagination.css">
+    <link rel="stylesheet" href="./login_files/responsive.css">
+    <link rel="stylesheet" href="./login_files/datepicker.min.css">
+    <link rel="stylesheet" href="./login_files/owl.carousel.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        
+        var listUsuarios = [
+            {
+                nombre: "1071051",
+                password: "123"
+            },
+            {
+                nombre: "1059861",
+                password: "123"
+            },
+            {
+                nombre: "1067811",
+                password: "123"
+            },
+            {
+                nombre: "1069211",
+                password: "123"
+            },
+            {
+                nombre: "1059865",
+                password: "123"
+            }
+            ]
+        function blinkeffect(selector) {
+            $(selector).fadeOut('slow', function () {
+                $(this).fadeIn('slow', function () {
+                    blinkeffect(this);
+                });
+            });
+        }
+
+        function login() {
+
+            var user = $('#user')[0].value
+            var password = $('#password')[0].value
+
+            if(listUsuarios.find(function(_user){
+               return _user.nombre === user 
+               && _user.password === password;
+             })){
+
+                window.location.href = "./inicio.html"
+             }else{
+                $('#l-float-error').css("display", "block");
+             }
+        }
+
+    </script>
+
+
+    <script type="text/javascript">
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-32068627-4', 'auto');
+        ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div>
+            <a href="#">
+                <img src="./login_files/logo-intec.svg" alt="Instituto Tecnológico de Santo Domingo" width="150"
+                    class="logo">
+            </a>
+            <a class="uk-icon-exclamation uk-alert uk-float-right" data-uk-modal="" href="#">
+                Activa tu correo institucional y entérate de lo que viene
+            </a>
+        </div>
+    </header>
+    <div class="login-container">
+        <div class="uk-alert alert-ie">
+            <p>
+                Para poder utilizar este site, debe actualizar su version de internet explorer.
+                <a class="black-font" href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Click aqui
+                    para actualizar</a>
+            </p>
+        </div>
+        <h1>Acceso estudiantil a procesos académicos</h1>
+        <div class="login">
+            <h3><span class="uk-icon-lock small-right-margin"></span>Iniciar sesión</h3>
+            <div class="login-content">
+                <form>
+                        <div class="float-error" id="l-float-error"style="display:none">
+                                <p>Usuario o contraseña incorrectos.</p>
+                            </div>
+                    <div class="control">
+                        <label for="ID">ID</label>
+                        <input class="light-border" id="user" name="user" type="text" value="">
+                    </div>
+                    <div class="control">
+                        <label for="PIN_Contrase_a">PIN/Contraseña</label>
+                        <input class="light-border" id="password" name="password" type="password">
+                    </div>
+                    <a> ¿Olvido su contraseña?</a>
+                    <button id="btnEntrar" type="button" onclick="login()"
+                        class="bg-black no-border button-square uk-icon-arrow-circle-right uk-float-right">Acceder</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="browser-information">
+            <ul>
+                <li>
+                    <span>IE 9+</span>
+                    <span id="ie-logo" class="browser-logo"></span>
+                </li>
+                <li>
+                    <span>Firefox 3+</span>
+                    <span id="firefox-logo" class="browser-logo"></span>
+                </li>
+                <li>
+                    <span>Chrome 10+</span>
+                    <span id="chrome-logo" class="browser-logo"></span>
+                </li>
+                <li>
+                    <span>safari 5+</span>
+                    <span id="safari-logo" class="browser-logo"></span>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="modal-information" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a href="https://procesos.intec.edu.do/Usuario/Logout#" class="uk-modal-close">X</a>
+            <h1>ACTIVA TU CORREO INSTITUCIONAL Y ENTÉRATE DE LO QUE VIENE</h1>
+            <p class="font-bold-500">Tu correo ID@est.intec.edu.do te permitirá mantenerte al tanto del estatus de
+                servicios y procedimientos institucionales como:</p>
+            <ul>
+                <li class="font-bold-500">Publicación de calificaciones</li>
+                <li class="font-bold-500">Solicitud de revisión</li>
+                <li class="font-bold-500">Evaluación profesoral</li>
+                <li class="font-bold-500">Preselección, selección, modificación y retiro</li>
+                <li class="font-bold-500">Pagos</li>
+                <li class="font-bold-500">Calendario trimestral</li>
+            </ul>
+            <div style="padding: 0 10px;">
+                <p>
+                    Además, tendrás acceso a Office 365, con múltiples facilidades para móviles y licencias gratuitas de
+                    aplicaciones,
+                    entre otros beneficios.<br><br>
+                    Click <a target="_blank" href="https://www.outlook.com/owa/?realm=est.intec.edu.do">aquí</a> para
+                    ingresar.<br>
+                    Solo tienes que colocar tu ID@est.intec.edu.do y la contraseña que utilizas para ingresar a tu
+                    sistema académico.<br>
+                    Si no recuerdas tu ID dale click <a target="_blank"
+                        href="http://apps.intec.edu.do/id-search">aquí</a>. <br>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="modal-wrapper" style="visibility:hidden">
+        <div id="modal" class="modal">
+            <div class="modal-header"></div>
+            <div class="modal-content"></div>
+            <div class="modal-footer"> </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./login_files/ui.js.download"></script>
+    <script src="./login_files/retiroAsignaturas.js.download"></script>
+    <script type="text/javascript" src="./login_files/utility.js.download"></script>
+
+    <input type="hidden" id="txtNumero" value="os">
+
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+﻿function asyncPost(url, data, callback) {
+    $.ajaxSetup({ contentType: "application/json; charset=utf-8" });
+    $.post(url, data, function (serverInfo) {
+        if (serverInfo.tipo === "sesion") {
+            alert(serverInfo.valor);
+            window.location.href = '/Usuario/Login'
+        }
+        else if (serverInfo.tipo === "sesionSeleccion") {
+            alert(serverInfo.valor);
+            window.location.href = '/Main/Inicio';
+        }
+        else {
+            callback(serverInfo);
+        }
+    });
+}
+// Funciones de retiro
+
+$('#btnSalirRetiro').click(function () {
+    var result = confirm("¿Está seguro que quiere salir sin guardar los cambios?");
+    if (result) {
+        window.location.href = '/Main/Inicio'
+    }
+});
+
+localStorage.removeItem('correo');
+$('#btnGuardarRetiro').click(function () {
+    //$('#modal').cargarModal(dialogs.causaRetiro, '600px');
+
+    var jsonCO = [];
+    var materiasCO = $('#tblRetiradas tbody').find('tr').find('a').parent().parent();
+    materiasCO.each(function () {
+        var childrens = $(this).children();
+        jsonCO.push({
+            Codigo: childrens.first().html().split("-")[0],
+            NombreCompleto: childrens.first().html(),
+            CodigoArea: '0'
+        });
+    });
+
+    asyncPost('/Retiro/ObtenerCausasModal', JSON.stringify({ materias: jsonCO }), function (data) {
+        $('#modal').cargarModal(data, '500px');
+    });
+    $('#txtCorreo').keyup(function () { localStorage.setItem('correo', $('#txtCorreo').val()); });
+
+    asyncPost('/Retiro/ObtenerInformacionEstudiante', null, function (serverInfo) {
+        $('#txtCorreo').val(serverInfo.valor.correo);
+        localStorage.setItem('correo', serverInfo.valor.correo);
+    });
+
+    $(document).on('click', '#btnAceptarRazones', function () {
+
+        var razonMarcada = $('.chkCausaRetiro:checked').val();
+        var textComentario = $('#txtComentario').val().trim();
+
+        if (razonMarcada != undefined || textComentario != "") {
+            var razon = {
+                CAUSA_RETIRO_ID: razonMarcada,
+                COMENTARIO: textComentario
+            };
+
+            ocultarModal();
+            $('#modal').cargarModal(dialogs.confirmaCredenciales, '347px');
+            asyncPost('/Retiro/ObtenerInformacionEstudiante', null, function (info) {
+                $('#txtID').val(info.valor.id);
+            });
+
+            $(document).unbind().on('click', '#btnRetirar', function () {
+                var json = [];
+                var materias = $('#tblRetiradas tbody').find('tr').find('a').parent().parent();
+                materias.each(function () {
+                    var childrens = $(this).children();
+
+                    json.push({
+                        Codigo: childrens.first().html().split("-")[0],
+                        NombreCompleto: childrens.first().html(),
+                        Seccion: childrens[2].innerHTML,
+                        CodigoArea: '0'
+                    });
+                });
+
+                asyncPost('/Retiro/RetirarMaterias', JSON.stringify({ materias: json, retiro: razon, password: $('#txtPassword').val() }), function (info) {
+                    if (info.tipo == 'error') {
+                        $('#msjError').html(info.valor);
+                    }
+                    else {
+                        ocultarModal();
+                        $(".uk-alert").fadeIn();
+                        materias.children().each(function (index, value) {
+                            $(this).last().find('a').remove();
+                        });
+
+                        $('#lblRetiradas').html(info.valor.Retiradas)
+                        $('#lblContinua').html(info.valor.Continua);
+                    }
+                });
+
+                var parametroServidor = {
+                    indiceReporte: 7,
+                    correo: localStorage.getItem('correo'),
+                    contrasena: $('#txtPassword').val(),
+                    parametros: null
+                }
+
+                asyncPost('/Reporte/EnviarCorreo', JSON.stringify(parametroServidor), function (info) { });
+                $('#btnRetirar').addClass('disabled');
+            });
+        } else {
+
+            document.getElementById("mensajeError").innerHTML = "<div style='border: 1px solid #f90505;padding: 5px;color: #ea6262;'>Debe elegir una de las razones o escribir un comentario, para poder retirar.</div>";
+
+        }
+    });
+});

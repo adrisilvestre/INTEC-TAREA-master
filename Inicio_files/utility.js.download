@@ -1,0 +1,42 @@
+﻿function toogleSubmenu(menuItem) {
+    var submenu = $('#submenu-container');
+    if (submenu.css('opacity') === "0") {        
+        displaySubmenu(menuItem);
+    } else {
+        hideSubmenu();
+    }
+}
+
+function displaySubmenu(menuItem) {
+    var submenu = $('#submenu-container');
+    submenu.find("> ul").css('display', 'none');
+    submenu.find('#' + menuItem.data('submenu')).css('display', 'block');
+
+    if (submenu.css('opacity') === "0") {
+        $('#submenu-container').animate({
+            opacity: 100,
+            left: '18%'
+        });
+    }
+}
+
+function hideSubmenu() {
+    $('#submenu-container').animate({
+        opacity: 0,
+        left: 0
+    });
+}
+
+function EnableSingleCheckboxSelection() {
+    $(document).on('click','input:checkbox', function () {
+        var self = $(this);
+
+        if (self.is(':checked')) {
+            var group = $("input:checkbox[group='" + self.attr("group") + "']");
+            group.prop('checked', false);
+            self.prop('checked', true);
+        } else {
+            self.prop('checked', false);
+        }
+    });
+}

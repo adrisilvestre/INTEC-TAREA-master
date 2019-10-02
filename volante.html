@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)https://procesos.intec.edu.do/Reporte/Index?indiceReporte=3 -->
+<html lang="es" class="uk-notouch">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!--[if IE 8]>
+        <link rel="stylesheet" href="/Content/ie8.css">
+    <![endif]-->
+
+    <!--[if lte IE 7]>
+        <link rel="stylesheet" href="/Content/ie7.css">
+    <![endif]-->
+
+    <title>Volante Publicación de Medio Término</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./volante_files/uikit.min.css">
+    <link rel="stylesheet" href="./volante_files/style.css">
+    <link rel="stylesheet" href="./volante_files/pagination.css">
+    <link rel="stylesheet" href="./volante_files/responsive.css">
+    <link rel="stylesheet" href="./volante_files/datepicker.min.css">
+    <link rel="stylesheet" href="./volante_files/owl.carousel.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        function blinkeffect(selector) {
+            $(selector).fadeOut('slow', function () {
+                $(this).fadeIn('slow', function () {
+                    blinkeffect(this);
+                });
+            });
+        }
+
+        function showReporte(){
+            $('#report-content').css("display", "block");
+        }
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-32068627-4', 'auto');
+        ga('send', 'pageview');
+    </script>
+</head>
+
+<body style="">
+    <header class="main-header">
+        <div class="uk-container uk-container-center">
+            <a href="./inicio.html">
+                <img src="./volante_files/logo-intec.svg" alt="Instituto Tecnológico de Santo Domingo" width="150"
+                    class="logo">
+            </a>
+        </div>
+    </header>
+
+    <div id="container" class="uk-grid">
+        <nav id="menu-nav" class="uk-width-2-10 auto-heigh menu-container" style="padding-left: 35px;">
+            <div class="nav-options">
+                <h1 class="section-title color-white uk-hidden-small">Opciones</h1>
+                <ul class="menu uk-nav uk-nav-parent-icon">
+
+                    <li><a id="opInicio" class="uk-icon-home" href="./inicio.html"><span class="uk-hidden-small">Inicio</span></a>
+                    </li>
+                    <li id="opProcesosAcademicos" class="menu-slider" data-submenu="procesos-menu">
+                        <a class="uk-icon-edit" href="./volante.html">
+                            <span class="uk-hidden-small">Volante de Selección</span>
+                            <span class="uk-icon-chevron-right uk-float-right"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="content" class="uk-width-8-10 auto-heigh  on">
+
+            <input id="txtReporte" type="hidden" value="3">
+
+            <div class="content-header">
+                <div class="topbar">
+                    <div>
+                        <div class="toogle-menu">
+                            <a href="#"
+                                class="top-icon uk-icon-cog"></a>
+                            <ul>
+                                <li class="uk-icon-user"><a href="#"
+                                        class="black-font">Información Personal</a></li>
+                                <li class="uk-icon-lock"><a href="./login.html"
+                                        class="black-font">Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                        <span class="aligh-right color-white">ESTEPHANY HERRERA OGANDO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-header">
+                <div class="uk-width-1-1">
+                    <h1 class="section-title light-bottom-border uk-margin-bottom-remove">Volante de Selección</h1>
+                    <div class="parameter-container">
+                        <div class="parameter">
+                            <span>Año</span>
+                            <select id="ddlAno" name="ano">
+                                <option>2019</option>
+                                <option>2018</option>
+                                <option>2017</option>
+                                <option>2016</option>
+                                <option>2015</option>
+                                <option>2014</option>
+                                <option>2013</option>
+                                <option>2012</option>
+                                <option>2011</option>
+                                <option>2010</option>
+                                <option>2009</option>
+                                <option>2008</option>
+                                <option>2007</option>
+                                <option>2006</option>
+                                <option>2005</option>
+                                <option>2004</option>
+                                <option>2003</option>
+                                <option>2002</option>
+                                <option>2001</option>
+                                <option>2000</option>
+                                <option>1999</option>
+                                <option>1998</option>
+                                <option>1997</option>
+                                <option>1996</option>
+                                <option>1995</option>
+                                <option>1994</option>
+                                <option>1993</option>
+                                <option>1992</option>
+                                <option>1991</option>
+                                <option>1990</option>
+                                <option>1989</option>
+                                <option>1988</option>
+                                <option>1987</option>
+                                <option>1986</option>
+                                <option>1985</option>
+                                <option>1984</option>
+                                <option>1983</option>
+                                <option>1982</option>
+                                <option>1981</option>
+                                <option>1980</option>
+                                <option>1979</option>
+                                <option>1978</option>
+                                <option>1977</option>
+                                <option>1976</option>
+                                <option>1975</option>
+                                <option>1974</option>
+                                <option>1973</option>
+                                <option>1972</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <span>Periodo</span>
+                            <select id="ddlPeriodo" name="periodo">
+                                <option value="3">AGOSTO - OCTUBRE</option>
+                            </select>
+                        </div>
+
+                        <div class="parameter" style="width:250px">
+                            <button  onclick="showReporte()" class="button-square no-border bg-black">Generar
+                                Reporte</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-alert uk-alert-success" style="display:none"></div>
+            <div id="report-content" style="display: none" class="report-content">
+
+                <div class="report-header-container responsive-block">
+                    <div class="report-header responsive-block">
+                        <table class="table-field">
+                            <tbody>
+                                <tr>
+                                    <td class="font-bold-600">ID:</td>
+                                    <td>1059861</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-bold-600">Nombre:</td>
+                                    <td>ESTEPHANY HERRERA OGANDO</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-bold-600">Programa:</td>
+                                    <td>(Med2012) Medicina</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="clear">
+                    <table class="uk-width-1-1 print-table">
+                        <thead>
+                            <tr>
+                                <th class="font-bold-600">Clave</th>
+                                <th class="font-bold-600 uk-text-center">Sec</th>
+                                <th class="font-bold-600">Asignatura</th>
+                                <th class="font-bold-600 uk-text-center">Profesor</th>
+                                <th class="font-bold-600 uk-text-center">CR</th>
+                                <th class="font-bold-600 uk-text-center">Lun</th>
+                                <th class="font-bold-600 uk-text-center">Mar</th>
+                                <th class="font-bold-600 uk-text-center">Mier</th>
+                                <th class="font-bold-600 uk-text-center">Jue</th>
+                                <th class="font-bold-600 uk-text-center">Vier</th>
+                                <th class="font-bold-600 uk-text-center">Sab</th>
+                                <th class="font-bold-600 uk-text-center">Aula</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td class="uk-text-center">ASL311</td>
+                                <td class="uk-text-center">02</td>
+                                <td class="">LABORATORIO PATOLOGIA PEDIATRICA INFECCIOSA</td>
+                                <td>DANIA MERCEDES TORRES ALMANZAR</td>
+                                <td class="uk-text-center">4</td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center">8/12</td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center">MV51</td>
+                            </tr>
+                            <tr>
+                                <td class="uk-text-center">ASL315</td>
+                                <td class="uk-text-center">05</td>
+                                <td class="">LABORATORIO PATOLOGIA QUIRURGICA II</td>
+                                <td>VICENTE CALCAÑO UCETA</td>
+
+                                <td class="uk-text-center">4</td>
+                                <td class="uk-text-center">16/18</td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center">16/18 </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center">SBG</td>
+
+                            </tr>
+                            <tr>
+                                <td class="uk-text-center">ASM311</td>
+                                <td class="uk-text-center">02</td>
+                                <td class="">PATOLOGIA PEDIATRICA INFECCIOSA</td>
+                                <td>DANIA MERCEDES TORRES ALMANZAR </td>
+                                <td class="uk-text-center">2</td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center">14/16 </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center">AH408</td>
+
+                            </tr>
+                            <tr>
+                                <td class="uk-text-center">ASM315</td>
+                                <td class="uk-text-center">01</td>
+                                <td class="">PATOLOGIA QUIRURGICA II</td>
+                                <td>JOSE GREGORIO HERNANDEZ GOMEZ</td>
+                                <td class="uk-text-center"> 4</td>
+
+                                <td class="uk-text-center">18/20 </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center">18/20</td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center">AH314, AH414</td>
+
+                            </tr>
+                            <tr>
+                                <td class="uk-text-center">ASM318</td>
+                                <td class="uk-text-center">01</td>
+
+                                <td class="">PATOLOGIA GINECOBSTETRICA</td>
+                                <td>CARLOS JOSE REGALADO CASTELLANO</td>
+
+                                <td class="uk-text-center">2</td>
+                                <td class="uk-text-center">14/16</td>
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"> </td>
+                                <td class="uk-text-center"></td>
+                                <td class="uk-text-center">AH314, AH414</td>
+
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="font-bold-600 uk-text-right">Teorías :</td>
+                                <td>3</td>
+                                <td class="font-bold-600 uk-text-right">Total Créditos :</td>
+                                <td>16</td>
+                                <td colspan="7"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold-600 uk-text-right">Laboratorios :</td>
+                                <td>2</td>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold-600 uk-text-right">Total Asignaturas :</td>
+                                <td>5</td>
+                                <td colspan="9"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-wrapper" style="visibility:hidden">
+        <div id="modal" class="modal">
+            <div class="modal-header"></div>
+            <div class="modal-content"></div>
+            <div class="modal-footer"> </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./volante_files/ui.js.download"></script>
+    <script src="./volante_files/retiroAsignaturas.js.download"></script>
+    <script type="text/javascript" src="./volante_files/utility.js.download"></script>
+
+    <input type="hidden" id="txtNumero" value="os">
+
+</body>
+
+</html>

@@ -1,0 +1,859 @@
+﻿$(function () {
+    initializeAccordion();
+    seleccion = cargarSeleccionActual();
+    EnableSingleCheckboxSelection();
+
+    $('.phone-mask').mask("999-999-9999");
+ 
+    $.fn.serializeFormJSON = function () {
+
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+
+    if (!Array.prototype.indexOf) {
+        Array.prototype.indexOf = function (elt /*, from*/) {
+            var len = this.length >>> 0;
+
+            var from = Number(arguments[1]) || 0;
+            from = (from < 0)
+         ? Math.ceil(from)
+         : Math.floor(from);
+            if (from < 0)
+                from += len;
+
+            for (; from < len; from++) {
+                if (from in this &&
+          this[from] === elt)
+                    return from;
+            }
+            return -1;
+        };
+    }
+
+    function asyncPost(url, data, callback) {
+        $.ajaxSetup({ contentType: "application/json; charset=utf-8" });
+        $.post(url, data, function (serverInfo) {
+            if (serverInfo.tipo === "sesion") {
+                alert(serverInfo.valor);
+                window.location.href = '/Usuario/Login'
+            }
+            else if (serverInfo.tipo === "sesionSeleccion") {
+                alert(serverInfo.valor);
+                window.location.href = '/Main/Inicio';
+            }
+            else {
+                callback(serverInfo);
+            }
+        });
+    }
+
+    // JQuery Events
+
+    $(window).bind("scroll", function () {
+        var w = $(window).scrollTop(),
+            e = $('#menu-nav, #submenu-container, .topbar'),
+            o = e.offset().top;
+        if (w >= o) { e.addClass('fixed') } else {
+            e.removeClass('fixed')
+        }
+    });
+
+    $(".menu-slider").click(function () {
+        toogleSubmenu($(this));
+    });
+
+    $('#content').click(function () {
+        hideSubmenu();
+    });
+
+    $('.cancel').click(function (e) {
+        e.preventDefault();
+        window.location.href = '/Main/Inicio'
+    });
+
+    // Eventos de usuario
+    $('#EnviarCorreo').click(function () {
+        var self = $(this);
+        var url = '/Usuario/EnviarLinkContrasena';
+        var data = { id: parseInt($('#txtId').val()) ? parseInt($('#txtId').val()) : 0 };
+        var error = false;
+        var mensage = $('.message p');
+
+        mensage.empty();
+        mensage.append('Procesando... <img src="/Content/themes/base/images/Loading-red-47x47.gif" />');
+        $('.message').fadeIn();
+
+        $.post(url, data, function (data) {
+            //mensage.fadeOut();
+            mensage.empty();
+            mensage.text(data.message);
+            if (data.wasMessageSend) {
+                mensage.removeClass('uk-alert uk-alert-danger');
+                mensage.addClass('uk-alert uk-alert-success');
+            } else {
+                mensage.removeClass('uk-alert uk-alert-success');
+                mensage.addClass('uk-alert uk-alert-danger');
+                error = true;
+            }
+        }).success(function () {
+            $('.message').fadeIn();
+            if (!error) {
+                self.addClass('disabled');
+                self.attr('disabled', 'disabled');
+            }
+        });
+    });
+
+    $('#btnReiniciarContrasena').click(function () {
+        var self = $(this);
+        var url = '/Usuario/ChangePassword';
+        var data = {
+            contrasena: $('#txtContrasena').val(),
+            confirmacion: $('#txtConfirmacionContrasena').val(),
+            code: $('#txtCode').val()
+        };
+
+        $.post(url, data, function (data) {
+            var mensageContainer = $('#error-message > div');
+
+            if (data.isPasswordSaved) {
+                $('.login').fadeOut(100);
+                $('#fail').hide();
+
+                mensageContainer.removeClass('uk-alert uk-alert-danger');
+                mensageContainer.addClass('uk-alert uk-alert-success');
+
+
+                $('#success').fadeIn();
+                $('#login-info').fadeIn();
+
+
+            } else {
+                var messageList = $('#fail ul');
+                messageList.empty();
+
+                mensageContainer.removeClass('uk-alert uk-alert-success');
+                mensageContainer.addClass('uk-alert uk-alert-danger');
+
+
+                $.each(data.messages, function (index, item) {
+                    messageList.append("<li>" + item + "</li>");
+                });
+
+                $('#fail').show();
+            }
+        }).success(function () {
+            $('#error-message').fadeIn();
+        });
+    });
+
+    $('#frmUserData').submit(function (e) {
+        e.preventDefault();
+        var self = $(this);
+        var data = self.serializeFormJSON();
+        var url = self.prop('action');
+        var errorMsg = $('#msgRed');
+        var sucessMsg = $('#msgGreen');
+
+        data['phone'] = data['Phone'].replace(/-/g, '');
+        data = JSON.stringify(data);
+
+        asyncPost(url, data, function (data) {
+            errorMsg.empty();
+            sucessMsg.empty();
+            if (data.errors.length > 0) {
+                var content = '<span>Errores encontrados :</span><ul>';
+                $.each(data.errors, function (index, value) {
+                    content += '<li>' + value + '</li>'
+                });
+                sucessMsg.fadeOut();
+                content += '</ul>';
+                errorMsg.append(content);
+                errorMsg.slideDown();
+            } else {
+                errorMsg.fadeOut();
+                sucessMsg.append('Los cambios han sido guardados satisfactoriamente.');
+                sucessMsg.slideDown();
+            }
+        });
+
+    });
+
+    // Eventos relacionados a la oferta academica
+    $('#btnBuscarAsignatura').click(function () {
+        var url = '/OfertaAcademica/Search'
+        var data = JSON.stringify({ query: $('#txtSearch').val() });
+
+        var content = $('#content-oferta');
+        content.addClass('uk-text-center');
+        content.empty();
+        content.append($('<img src="/Content/themes/base/images/Loading-red-100x100.gif" />'))
+
+        asyncPost(url, data, function (result) {
+            content.removeClass('uk-text-center');
+            content.empty();
+            content.append(result);
+        });
+    });
+
+    // Eventos relacionados al acceso de las secciones de la pagina
+
+    $('.menu li:not("#opReporte") a').click(function (e) {
+        if (window.location.href.indexOf('Seleccion') != -1) {
+            e.preventDefault();
+            var respuesta = confirm('Si sale de esta página perdera toda la información que no haya guardado. ¿Esta seguro que desea salir?');
+
+            if (respuesta) {
+                if ($(this).data('opcion')) {
+                    validarOpciones($(this));
+                }
+                else {
+                    window.location.href = $(this).attr('href');
+                }
+            }
+        }
+    });
+
+    // Funciones de seleccion
+
+    $(document).on('click', '#btnGuardar', function () {
+        var url = '/Seleccion/Guardar';
+        var divMensaje = $('#msgGreen');
+        var divError = $('#msgRed');
+        divMensaje.html('Guardando información ');
+        divMensaje.append($('<span class="uk-icon-spinner uk-icon-spin"></span>'));
+        divError.hide();
+        divMensaje.fadeIn();
+        $.post(url, function (json) {
+            if (json.tipo == 'mensaje') {
+                divMensaje.html(json.valor);
+            }
+            else if (json.tipo === 'error') {
+                divError.html(json.valor);
+                divMensaje.hide();
+                divError.fadeIn();
+            } else if (json.tipo === 'session') {
+                alert(json.valor);
+                window.location.href = '/Usuario/Login';
+            } else if (json.tipo === 'sesionSeleccion') {
+                alert(json.valor);
+                window.location.href = '/Main/Inicio';
+            }
+        });
+    });
+
+    $(document).on('click', '#btnSalir', function () {
+        var result = confirm("¿Está seguro que quiere salir sin guardar los cambios?");
+        if (result) {
+            $.post("/Seleccion/SalirSinGuardar", function () {
+                window.location.href = '/Main/Inicio';
+            });
+        }
+    });
+
+
+    $('#modal').on('click', '#btnAnteriorWizard', function () {
+        cargarTipWizard(1);
+    });
+
+    $('#modal').on('click', '#btnSiguienteWizard', function () {
+        cargarTipWizard(0);
+    });
+
+    $(".accordion-tabla").accordion({
+        header: "tbody.title", collapsible: true, active: false, heightStyle: "content"
+    });
+
+    $(document).on('click', "#btnBuscar", searchSubjects);
+    $(document).on('keypress', '#txtNombre', function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            searchSubjects(event);
+        }
+    });
+    $('#content').ready(function () {
+        $('#content').addClass('on');
+    });
+
+    $(document).on('click', '.subject-list a', function (e) {
+        e.preventDefault();
+        var parameters = {
+            codigo: $(this).parent().find('.codigo').first().html(),
+            tipo: $(this).parent().find('.tipo').first().html()
+        };
+        asyncPost('/Seleccion/ObtenerInfoMateria', JSON.stringify(parameters), function (data) {
+            if (data.tipo == "resultado") {
+                $.each(data.valor.materia, function (indice, materia) {
+                    var tableTbodyMateria = $('<tbody class="title"></tbody>');
+                    var tableRowMateria = $('<tr></tr>');
+
+                    tableRowMateria.append($('<td> <span class="uk-icon-selector-accordion black-font"></span><span>' + materia.nombre + '</span></td>'));
+                    tableRowMateria.append($('<td class="uk-text-center">' + materia.creditos + '</td>'));
+                    tableRowMateria.append($('<td class="uk-text-center">' + materia.tipo + '</td>'));
+                    tableRowMateria.append($('<td class="uk-text-center font-bold-800"></td>'));
+                    tableRowMateria.append($('<td class="uk-text-center font-bold-800"></td>'));
+                    tableRowMateria.append($('<td class="uk-text-center"></td>'));
+
+                    if (data.valor.tipo == 'SEL') {
+                        tableRowMateria.append($('<td class="uk-text-center"></td>'));
+                        tableRowMateria.append($('<td class="uk-text-center"></td>'));
+                        tableRowMateria.append($('<td class="uk-text-center"></td>'));
+                        tableRowMateria.append($('<td class="uk-text-center"></td>'));
+                        tableRowMateria.append($('<td class="uk-text-center"></td>'));
+                        tableRowMateria.append($('<td class="uk-text-center"></td>'));
+                    }
+                    else {
+                        var selectString = '<td class="uk-text-center font-bold-800">';
+                        selectString += '<div class="parameter almost-full"><select class="tanda almost-full" disabled onchange="guardarTanda($(this))">';
+                        selectString += '<option value="0"></option>'
+                        $.each(data.valor.tanda, function (indice, tanda) {
+                            selectString += '<option value="' + tanda.codigo + '">' + tanda.descripcion + '</option>'
+                        });
+                        selectString += '</select> ';
+                        selectString += '</div> ';
+                        selectString += '</td>';
+                        tableRowMateria.append($(selectString));
+                    }
+
+                    tableTbodyMateria.append(tableRowMateria);
+                    $('#tblSeleccion').append(tableTbodyMateria);
+
+                    var tableTbodySecciones = $('<tbody class="content-info"></tbody>');
+                    $.each(materia.secciones, function (indice, seccion) {
+                        var tableRowSeccion = $('<tr></tr>');
+
+                        tableRowSeccion.append($('<td><input id="' + seccion.codigoCompleto + '"'
+                            + 'class="sections-button" type="radio" name="' + materia.codigo + materia.tipo + '"'
+                            + 'onclick="addSection($(this),\'/Seleccion/EliminarAsignatura?codigo=' + seccion.codigoCompleto + '\')"'
+                            + 'data-url="/Seleccion/SeleccionarAsignatura?codigo=' + seccion.codigoCompleto
+                            + '">'
+                            + '<label for="' + seccion.codigoCompleto + '">'
+                            + seccion.nombre + '</label></td>'));
+
+                        tableRowSeccion.append($('<td class="uk-text-center"></td>'));
+                        tableRowSeccion.append($('<td class="uk-text-center"></td>'));
+
+                        tableRowSeccion.append($('<td class="uk-text-center">' + seccion.seccion + '</td>'));
+                        tableRowSeccion.append($('<td class="uk-text-center">' + seccion.cupo + '</td>'));
+                        tableRowSeccion.append($('<td class="uk-text-center" id="profesor">' + seccion.profesor + '</td>'));
+
+                        if (data.valor.tipo == 'SEL') {
+                            tableRowSeccion.append($('<td class="uk-text-center">' + seccion.horario.Lunes + '</td>'));
+                            tableRowSeccion.append($('<td class="uk-text-center">' + seccion.horario.Martes + '</td>'));
+                            tableRowSeccion.append($('<td class="uk-text-center">' + seccion.horario.Miercoles + '</td>'));
+                            tableRowSeccion.append($('<td class="uk-text-center">' + seccion.horario.Jueves + '</td>'));
+                            tableRowSeccion.append($('<td class="uk-text-center">' + seccion.horario.Viernes + '</td>'));
+                            tableRowSeccion.append($('<td class="uk-text-center">' + seccion.horario.Sabado + '</td>'));
+                        }
+                        else {
+                            tableRowSeccion.append($('<td class="uk-text-center"></td>'));
+                        }
+
+                        tableTbodySecciones.append(tableRowSeccion);
+                    });
+                    $('#tblSeleccion').append(tableTbodySecciones);
+                });
+                $(".accordion-tabla").accordion("refresh");
+                seleccion = cargarSeleccionActual();
+            }
+            if (data.tipo == "error") {
+                alert(data.valor)
+            }
+        });
+        return false;
+    });
+
+    //$(document).on('change', '.tanda', 
+
+   
+
+    $('.remove a').click(function () {
+        var status = false;
+        RetirarMateria(status, $(this).parent().parent());
+
+        function RetirarMateria(undo, tr) {
+            var clone = tr.clone();
+            var btn = clone.find('a').first();
+            var btnRetirar = $('#btnGuardarRetiro');
+
+            if (!undo) {
+                btn.removeClass('uk-icon-times');
+                btn.addClass('uk-icon-upload');
+                btnRetirar.removeClass('disabled');
+                btnRetirar.removeAttr('disabled');
+                $('#tblRetiradas tbody').append(clone);
+                tr.remove();
+
+
+            } else {
+                btn.removeClass('uk-icon-upload');
+                btn.addClass('uk-icon-times');
+                $('#tblActuales tbody').append(clone);
+                tr.remove();
+                if ($('#tblRetiradas').find('a').length <= 0) {
+                    btnRetirar.addClass('disabled');
+                    btnRetirar.attr('disabled', 'disabled');
+                }
+            }
+
+            if (clone) {
+                btn.click(function () {
+                    status = !status;
+                    RetirarMateria(status, clone);
+                });
+            }
+            return btn;
+        }
+    });
+
+    // Funcionalidades de los reportes
+
+    $('#btnMostrar').click(function () {
+        var parametroServidor = {
+            Programa: $('#ddlCarrera').val(),
+            Version: $('#ddlCarrera').find(':selected').data('version')
+        };
+
+        var reportContent = $('#information-content');
+        reportContent.addClass('uk-text-center');
+        reportContent.empty();
+        reportContent.append($('<img src="/Content/themes/base/images/Loading-red-100x100.gif" />'))
+
+        asyncPost("/Programa/MostrarEnPantalla", JSON.stringify(parametroServidor), function (data) {
+            reportContent.removeClass('uk-text-center');
+            reportContent.empty();
+            if (data) {
+                reportContent.append(data);
+            } else {
+                $('.uk-alert').show();
+                $('.uk-alert').html('Su sesión ha expirado. Para iniciar sesión nuevamente haga click <a href="/Usuario/Login" style="color: inherit; text-decoration: underline;">Aquí</a>');
+            }
+        });
+    });
+
+    $('#btnGenerarReporte').click(function () {
+        var parametroServidor = {
+            indiceReporte: $('#txtReporte').val(),
+            parametros: {
+                Ano: $('#ddlAno').val(),
+                Termino: $('#ddlPeriodo').val(),
+                Programa: $('#ddlCarrera').val(),
+                Division: $(".opciones:selected").data("division")
+            }
+        };
+
+        var reportContent = $('#report-content');
+        reportContent.addClass('uk-text-center');
+        reportContent.empty();
+        reportContent.append($('<img src="/Content/themes/base/images/Loading-red-100x100.gif" />'))
+
+        asyncPost("/Reporte/MostrarEnPantalla", JSON.stringify(parametroServidor), function (data) {
+            reportContent.removeClass('uk-text-center');
+            reportContent.empty();
+            reportContent.append(data);
+        });
+    });
+
+    $('#btnExportarReporte').click(function (e) {
+        e.preventDefault();
+        window.location.href = '/Reporte/Exportar?indiceReporte=' + $('#txtReporte').val() +
+                                "&parametros.Ano=" + $('#ddlAno').val() +
+                                "&parametros.Termino=" + $('#ddlPeriodo').val() +
+                                "&parametros.Programa=" + $('#ddlCarrera').val() +
+                                "&parametros.Division=" + $(".opciones:selected").data("division");
+    });
+
+    $('#btnEnviarCorreo').click(function (e) {
+        e.preventDefault();
+        $('#modal').cargarModal(dialogs.EspecificarCorreo, '400px').show();
+
+        $('#btnGuardarCorreo').click(function () {
+            ocultarModal();
+            var parametroServidor = {
+                indiceReporte: $('#txtReporte').val(),
+                correo: $('#txtCorreo').val(),
+                parametros: {
+                    Ano: $('#ddlAno').val(),
+                    Termino: $('#ddlPeriodo').val(),
+                    Programa: $('#ddlCarrera').val()
+                }
+            };
+
+            $(".uk-alert-success").fadeIn();
+            $(".uk-alert-success").html("Enviando Correo ... ");
+
+            asyncPost('/Reporte/EnviarCorreo', JSON.stringify(parametroServidor), function (data) {
+                if (data.tipo == "error") {
+                    $(".uk-alert-success").fadeIn();
+                    $(".uk-alert-success").html(data.valor);
+                }
+                else {
+                    $(".uk-alert-success").fadeIn();
+                    $(".uk-alert-success").html("La informacion ha sido enviada a la direccion de correo " + $('#txtCorreo').val());
+                }
+            });
+        });
+    });
+
+    function cargarTipWizard(tipo) {
+        var imagenes = ['preseleccion.gif', 'borrar.gif', 'buscar.gif'];
+        var imgSource = $('#imgWizard').attr('src');
+        var valorActual = imgSource.substring(imgSource.lastIndexOf("/") + 1);
+        var indice = imagenes.indexOf(valorActual);
+
+        if (tipo == 0) {
+            indice++;
+            $('#btnAnteriorWizard').prop("disabled", false);
+            $('#btnAnteriorWizard').removeAttr('style');
+        } else if (tipo == 1) {
+            indice--;
+            $('#btnSiguienteWizard').html("Siguiente");
+        }
+
+        if (indice == imagenes.length - 1 && tipo == 0) {
+            $('#btnSiguienteWizard').html("Finalizar");
+        }
+
+        if (indice >= imagenes.length && tipo == 0) {
+            ocultarModal();
+
+            //            $('#btnSiguienteWizard').html('Finalizar');
+            //            $(document).on('click', '#btnSiguienteWizard', function () {
+            //                ocultarModal();
+            //            });
+        }
+
+        if (indice == 0 && tipo == 1) {
+            $('#btnAnteriorWizard').attr("disabled", 'disabled');
+            $('#btnAnteriorWizard').css("background-color", 'gray');
+        }
+
+        cargarContenido();
+
+        function cargarContenido() {
+            var rutaImagen = "/Content/themes/base/images/" + imagenes[indice];
+            var labelWizard = "";
+
+            switch (indice) {
+                case 0:
+                    {
+                        labelWizard = 'Para seleccionar una materia debe expandir la asignatura presionando el ' +
+                        '<span class="font-bold-600">boton +</span>. Luego, marcar la seccion deseada y presionar el boton de guardar. ' +
+                        'Una materia esta seleccionada cuando aparece de color rosa.';
+                        break;
+                    }
+                case 1:
+                    {
+                        labelWizard = 'Para eliminar una seccion previamente seleccionada, ' +
+                        'debe presionar <span class="font-bold-600">el boton <span class="uk-icon-trash-o"></span></span> ' +
+                        'y presionar el boton guardar para salvar los cambios.';
+                        break;
+                    }
+                case 2:
+                    {
+                        labelWizard = 'Para agregar una nueva asignatura debe dirigirse al ' +
+                        '<span class="font-bold-600">listado de asignaturas ofertadas en el trimestre</span> ' +
+                        'y presionar el boton agregar. La nueva materia le aparecera disponible para ser seleccionada inmediatamente.';
+                        break;
+                    }
+            }
+            $('#imgWizard').attr('src', rutaImagen);
+            $('#labelWizard').html(labelWizard);
+        }
+    }
+
+    function searchSubjects(e) {
+        e.preventDefault();
+        var url = '/Seleccion/Search?query=' + $('#txtNombre').val();
+        $.post(url, function (data) {
+            if (data.tipo === "sesionSeleccion") {
+                alert(data.valor);
+                window.location.href = '/Main/Inicio';
+            } else if (data.tipo === "sesion") {
+                alert(data.valor);
+                window.location.href = '/Usuario/Login';
+            } else {
+                $('#all-subjects').children().last().remove();
+                $('#all-subjects').append(data);
+                initializeAccordion();
+            }
+        });
+    }
+
+    function initializeAccordion() {
+        //        $("#holderCB").jPages({ containerID: "subjectsCB", previous: "← Anterior", next: "Siguiente →", perPage: 15 });
+        //        $("#holderSH").jPages({ containerID: "subjectsSH", previous: "← Anterior", next: "Siguiente →", perPage: 15 });
+        //        $("#holderSA").jPages({ containerID: "subjectsSA", previous: "← Anterior", next: "Siguiente →", perPage: 15 });
+        //        $("#holderIN").jPages({ containerID: "subjectsIN", previous: "← Anterior", next: "Siguiente →", perPage: 15 });
+        //        $("#holderNG").jPages({ containerID: "subjectsNG", previous: "← Anterior", next: "Siguiente →", perPage: 15 });
+
+
+        if ($(".accordion")) {
+            $(".accordion").accordion({
+                header: "h3",
+                collapsible: true,
+                active: false,
+                heightStyle: "content",
+                autoHeight: false
+            });
+        }
+    }
+
+    function cargarSeleccionActual() {
+        var seleccion = [];
+        var table = $('#tblSeleccion tbody');
+        var index = 0;
+        for (var i = 0; i < table.length; i++) {
+            if (i % 2 != 0) {
+                var value = table.eq(i).find('input.checked').first();
+                seleccion[i] = {
+                    input: value,
+                    aviable: function () {
+                        if (value) {
+                            return value.length != 0
+                        } else {
+                            return false;
+                        }
+                    } ()
+                };
+            }
+        }
+
+        return seleccion
+    }
+});
+
+
+
+function removeSection(elem, url) {
+    //Obtener fila de asignaturas, indice y el combobox de la tanda(Preselección)
+    var tr = elem.parent().parent();
+    var select = tr.children().last().find('select');
+    var index = $('#tblSeleccion tbody').index(elem.closest('tbody').next());
+    //Remover sobreado de seleccion de esta fila de asignaturas
+    tr.removeClass('selected');
+
+    //Remover valores de la seccion de la fila de asignaturas e inabilitar combobox de tanda(preselección)
+    for (var i = 4; i < tr.children().length; i++) {
+        if (i == tr.children().length - 1 && select.length) {
+            select.val(0);
+            select.attr('disabled', 'disabled');
+        }
+        else {
+            tr.children().eq(i).html("");
+        }        
+    }
+
+    //Limpiando los radio button de las secciones disponibles para la fila de asignatura y eliminando boton para eliminar sección
+    tr.parent().next().find('input').removeAttr('checked');
+    tr.parent().next().find('input').removeClass('checked');
+    tr.parent().next().find('input').removeClass('current');
+    elem.parent().find('a').remove();
+    seleccion[index].aviable = false;
+
+    //Ejecutando funcion en el servidor y determinando errores de lo contrario actualizar cupos
+    $.post(url, function (data) {
+        if (data.tipo === "sesionSeleccion") {
+            alert(data.valor);
+            window.location.href = '/Main/Inicio';
+        } else if (data.tipo === "sesion") {
+            alert(data.valor);
+            window.location.href = '/Usuario/Login';
+        } else {
+            ActualizarCupos(data.cupos);
+        }
+    });
+}
+
+function addSection(elem, removeUrl) {
+    //Obtener fila de asignaturas, indice y el combobox de la tanda(Preselección)
+    var url = elem.data('url');
+    var tr = elem.parent().parent();
+    var parentTr = tr.parent().prev().find('tr');
+    var presentoError = false;
+    var index = $('#tblSeleccion tbody').index(tr.parent());
+    //Remover sobreado de seleccion de esta fila de asignaturas
+    removeUrl += '?codigo=' + elem.attr('id');
+
+    //Ejecutando funcion en el servidor y determinando errores de lo contrario actualizar cupos y agregando los datos a la fila de asignatura
+    if (!(elem.hasClass("checked") || elem.hasClass("current"))) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (info) {
+                if (info.tipo === "sesionSeleccion") {
+                    alert(info.valor);
+                    window.location.href = '/Main/Inicio';
+                } else if (info.tipo === "sesion") {
+                    alert(info.valor);
+                    window.location.href = '/Usuario/Login';
+                } else if (info.tipo === 'resultado' && info.valor != "") {
+                    alert(info.valor);
+                    presentoError = true;
+                    elem.removeClass('current');
+                    elem.removeClass('checked');
+                    if (!seleccion[index].aviable) {
+                        elem.prop('checked', false);
+                    } else {
+                        seleccion[index].input.addClass('current');
+                        seleccion[index].input.addClass('checked');
+                        seleccion[index].input.prop('checked', true);
+                    }
+                    if (seleccion[index].length == 0)
+                        seleccion[index].aviable = false;
+                } else {
+                    parentTr.addClass('selected');
+                    var select = parentTr.children().last().find('select');                    
+
+                    for (var i = 4; i < tr.children().length; i++) {
+                        if (i == tr.children().length - 1 && select.length > 0) {
+                            select.val(0);
+                            select.attr('data-asignatura', tr.children().eq(0).find('input').attr('id'));
+                            select.removeAttr('disabled');
+                        }
+                        else {
+                            parentTr.children()[i].innerHTML = tr.children()[i].innerHTML;
+                        }
+                    }
+                    ActualizarCupos(info.cupos);
+                    var link = $('<a onclick="removeSection($(this),\''
+                        + removeUrl + '\')"> <span class="uk-icon-trash-o uk-float-right black-font"></span> </a>');
+
+                    if (!parentTr.children().first().find('span').hasClass('uk-icon-trash-o')) {
+                        parentTr.children().first().append(link);
+                    }
+                    setChecked('current');
+                    seleccion[index].input = elem;
+                    seleccion[index].aviable = true;
+                }
+            }
+        }).done(function () {
+            if (!presentoError)
+                setChecked('checked');
+        });
+    } else {
+        //setChecked('checked');
+    }
+
+    function setChecked(state) {
+        if (typeof state) {
+            tr.parent().find('input.' + state).removeClass(state);
+            elem.addClass(state);
+        }
+    }
+}
+
+function ocultarModal() {
+    $('.modal-wrapper').css('visibility', 'hidden');
+    $('body').css('overflow', '');
+}
+
+function ocultarCondiciones() {
+    var modal = $('.modal-wrapper');
+    var check = $('.modal-wrapper').find('input[type="checkbox"]');
+
+    if (check.prop('checked')) {
+        ocultarModal();
+    } else {
+        $('.footer-form').addClass('error');
+    }
+};
+
+function cargarGuia(mostrarSiempre) {
+    var guiaDesplegada = localStorage.getItem('guiaDesplegada');
+    if (!guiaDesplegada) {
+        $('#modal').cargarModal(dialogs.Guia, '670px').show();
+        localStorage.setItem('guiaDesplegada', 'si');
+    }
+
+    if (mostrarSiempre) {
+        $('#modal').cargarModal(dialogs.Guia, '670px').show();
+    }
+}
+
+function ActualizarCupos(cupos) {
+    $.each(cupos, function (index, cupoAsignatura) {
+        var selector = '#Asignatura-' + cupoAsignatura.Codigo;
+
+        $(selector).next().find('tr').each(function (index, element) {
+            var seccion = $(element).find('td').eq(4).text();
+
+            if (seccion === cupoAsignatura.Seccion) {
+                $(element).find('td').eq(3).html(cupoAsignatura.CUPO);
+            }
+        });
+    });
+}
+
+function guardarTanda(elem) {
+    var url = "/Seleccion/GuardarTanda";
+    var seccion = elem.attr('data-asignatura');    
+    var data = JSON.stringify({ crs_cde: seccion, Tanda: elem.val() });
+
+    $.ajaxSetup({ contentType: "application/json; charset=utf-8" });
+    $.post(url, data, function () { });
+}
+
+function Seleccionar(elem) {
+    var tr = elem.parent().parent();
+    var state = "checked";
+    var trChecked = tr.parent().find('input.' + state).parent().parent();
+    var tbody = tr.parent();    
+
+    //Eliminar estilos de seleccion de la linea marcada
+    tbody.find('input.' + state).prop('checked', false);
+    trChecked.removeClass("selected");
+    trChecked.find('td.uk-text-bold').removeClass('uk-text-bold');
+    tbody.find("input[type='checkbox']").prop('checked', false);
+    tbody.find("input[type='checkbox']").prop('disabled', true);
+    tbody.find("input.monto-pagar").prop('disabled', true);
+    tbody.find("input.monto-pagar").prop('value', '0.00');
+    tbody.find('input.' + state).removeClass(state);
+    
+    
+    
+    //asignar estilos de seleccion a la nueva linea seleccionada.
+    elem.addClass(state);
+    tbody.find('input.' + state).prop('checked', true);
+    tr.addClass("selected");
+    tr.find('td.monto-total').addClass('uk-text-bold');
+    var monto = tr.find('td.monto-total').prop('innerHTML');
+    tr.find('input.monto-pagar').prop('value', monto);
+    tr.find("input[type='checkbox']").prop('disabled', false);
+    tr.find("input.monto-pagar").prop('disabled', false);
+    PagoParcial = false;
+    tr.find('input.monto-pagar').focus().select();
+}
+
+function PartialChange(elem) {
+    var tr = elem.parent().parent();
+    var trSelected = tr.parent().find('tr.selected');
+
+    if (elem.prop("checked")) {
+        trSelected.find('td.monto-parcial').addClass('uk-text-bold');
+        trSelected.find('td.monto-total').removeClass('uk-text-bold');
+        var monto = tr.find('td.monto-parcial').prop('innerHTML');
+        tr.find('input.monto-pagar').prop('value', monto);
+        PagoParcial = true;
+    }
+    else {
+        trSelected.find('td.monto-parcial').removeClass('uk-text-bold');
+        trSelected.find('td.monto-total').addClass('uk-text-bold');
+        var monto = tr.find('td.monto-total').prop('innerHTML');
+        tr.find('input.monto-pagar').prop('value', monto);
+        PagoParcial = false;
+ }
+
+}

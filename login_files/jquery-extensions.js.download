@@ -1,0 +1,33 @@
+﻿$.fn.cargarModal = function (content, width) {
+    $(this).empty().append(content);
+    $(this).css('width', width);
+
+    var th = $(this);
+    var dm = { h: th.height(), w: th.width(), wp: $(window).width(), hp: $(window).height() };
+    var calc_h = dm.hp - dm.h;
+    var calc_w = dm.wp - dm.w;
+    th.css('top', calc_h / 2);
+    th.css('left', calc_w / 2);
+
+    $(this).parent().css('visibility', '');
+    $('body').css('overflow', 'hidden');
+
+    return $(this);
+}
+
+$.fn.toModal = function (width) {
+    //$(this).empty().append(content);
+    $(this).css('width', width);
+
+    var th = $(this);
+    var dm = { h: th.height(), w: th.width(), wp: $(window).width(), hp: $(window).height() };
+    var calc_h = dm.hp - dm.h;
+    var calc_w = dm.wp - dm.w;
+    th.css('top', calc_h / 2);
+    th.css('left', calc_w / 2);
+
+    $(this).parent().css('visibility', '');
+    $('body').css('overflow', 'hidden');
+
+    return $(this);
+}
